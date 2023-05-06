@@ -1,0 +1,10 @@
+INT - Integer
+BIGINT - Long
+
+DECIMAL, NUMERIC - с плавающей точкой (большие)
+
+SERIAL, BIGSERIAL - автоинкрементируются
+
+DATE - для даты
+TIME - время
+TIMESTAMP - дата и время

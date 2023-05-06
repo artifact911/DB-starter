@@ -1,6 +1,7 @@
 ### Constraints
 - NOT NULL - поле не может быть null
 - UNIQUE - поле должно быть уникальным
+  -  UNIQUE (first_name, last_name) - сложение двух полей и проверка на уникальность
 - CHECK - проверка на поле по какому-либо признаку
 - PRIMARY KEY
 - FOREIGN KEY

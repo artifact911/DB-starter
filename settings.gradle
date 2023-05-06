@@ -1,0 +1,3 @@
+rootProject.name = 'db-starter'
+include 'sql-dmdev-lesson'
+

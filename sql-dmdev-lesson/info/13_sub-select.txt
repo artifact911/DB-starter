@@ -1,0 +1,34 @@
+- Для подзапроса ОБЯЗАТЕЛЕН алиас
+
+    - подзапрос получает двух сотрудников по ЗП
+    - запрос считает их среднюю ЗП
+SELECT
+    avg(empl.salary)
+FROM (SELECT
+          *
+      FROM employee
+      ORDER BY salary DESC
+      LIMIT 2) empl;
+
+
+      - подзапрос считает всю среднюю ЗП
+      - подзапрос достаюет максимальную ЗП
+      - запрос добавляет соответсвующие столбцы из подзапросов к выборке
+select *,
+       (select avg(salary) from employee) avg,
+       (select max(salary) from employee) max
+from employee;
+
+
+     - подзапрос достает максимальную ЗП и отнимает ЗП сотрудника
+     - запрос добавляет соответсвующий столбец из подзапроса к выборке и показывает разницу от максимальной ЗП
+select *,
+       (select max(salary) from employee) - salary diff
+from employee;
+
+
+    - подзапрос достает компании с датой больше '2000-01-01'
+    - запрос показывает всех работников с такими компаниями
+select *
+from employee
+where company_id IN (select company.id from company where date > '2000-01-01')

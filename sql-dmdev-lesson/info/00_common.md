@@ -7,7 +7,6 @@
 - FOREIGN KEY
 
 ### DataType
-
 - INT - Integer
 - BIGINT - Long
 - DECIMAL, NUMERIC - с плавающей точкой (большие)
@@ -18,3 +17,17 @@
 - TEXT - не ограничен по длинне
 - CHAR(2) - определенной длинны (не больше не меньше)
 - VARCHAR(128) - ограниченной длинны ("ДО")
+
+### Agregation DB Function - все встроенные функции лежат в схеме pg_catalog
+- sum(salary) - постчитает сумму всех salary
+- avg(salary) - посчитает среднее
+- max(salary) - достанет максимальное
+- min(salary) - достанет минимальное
+- count(*) - посчитает количество строк
+  - "*" - строки
+  - "salary" - только те строки, где не null
+- upper(first_name) - в верхний регистр
+- lower(first_name) - в нижний
+- concat(first_name, ' ', last_name) - конкатенация
+  - first_name || ' ' || last_name - альтернатива
+- now() - вернет текущую дату по серверу

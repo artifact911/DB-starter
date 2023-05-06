@@ -1,0 +1,24 @@
+WHERE salary >= 1000
+WHERE first_name = 'Ivan'
+WHERE first_name != 'Ivan'
+
+WHERE first_name LIKE 'Pet%'
+WHERE last_name LIKE '%ov'
+WHERE last_name LIKE '%ov%'
+
+WHERE salary BETWEEN 1000 AND 1500
+
+WHERE salary IN (1000, 1100, 2000)
+WHERE salary IN (1000, 1100, 2000) AND first_name LIKE 'Iv%'
+WHERE salary IN (1000, 1100, 2000) OR first_name LIKE 'Iv%'
+
+!= - не равно. Не все СУБД поддерживают такой синтаксис. Тогда они юзают <>
+
+LIKE - при использовании LIKE процент говорит, что меня не интересует ничкго, после моего префикса. Если
+    я не поставлю процент, то будет работат, как обычное сравнение строк.
+    LIKE - чувствителен к регистру.
+ILIKE - не чувствителен, но не все СУБД его поддерживают.
+
+BETWEEN - поиск между
+
+IN - если хотим доставать конкретные поля

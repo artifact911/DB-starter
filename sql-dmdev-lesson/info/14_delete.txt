@@ -1,0 +1,31 @@
+DELETE FROM employee; - удалит ВСЕ записи из таблицы
+
+У нас не получится удалить запись, если на нее ссылается другая запись в таблице.
+    В данном примере, мы нее можем удалить компанию, т.к. на нее имеет fKey запить из таблицы employee
+    DELETE
+    FROM company
+    WHERE id = 1;
+    Решения:
+        1. Удалить сначала всез сотрудников, которые ссылаются на эту компанию, а потом саму компанию
+            DELETE
+            FROM employee
+            WHERE company_id = 1;
+
+        2. При создании таблицы сотрудников указать каскадное удаление, и тогда при удалении комапнии из базы
+            улалятся все ее сотрудники.
+            CREATE TABLE employee
+            (
+                id         SERIAL PRIMARY KEY,
+                first_name VARCHAR(128) NOT NULL,
+                last_name  VARCHAR(128) NOT NULL,
+                company_id INT REFERENCES company (id) ON DELETE CASCADE ,
+                salary     INT,
+                UNIQUE (first_name, last_name)
+            );
+
+    ON DELETE бывает:
+        - CASCADE
+        - NO ACTION - ничего не делать при удалении строки на которую ссылается запись эта запись
+        - RESTRICT - ничего не делать при удалении строки на которую ссылается запись эта запись
+        - SET DEFAULT - установить какое-то дефолтное значение
+        - SET NULL - установить NULL

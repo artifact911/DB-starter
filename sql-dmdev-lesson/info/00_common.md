@@ -25,7 +25,7 @@
 - min(salary) - достанет минимальное
 - count(*) - посчитает количество строк
   - "*" - строки
-  - "salary" - только те строки, где не null
+  - "salary" - только те строки, где не null значание salary
 - upper(first_name) - в верхний регистр
 - lower(first_name) - в нижний
 - concat(first_name, ' ', last_name) - конкатенация

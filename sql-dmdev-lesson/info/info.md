@@ -21,6 +21,7 @@
 17. [Joins](#joins)
 18. [GroupBy. Having](#groupBy-Having)
 19. [Window Function](#windowFunction)
+20. [View](#view)
 
 [Оглавление](#start)
 ## <p id='common'>0. Common</p>
@@ -539,3 +540,67 @@ Union можно писать в одом запросе сколько угод
     ORDER BY c.name;
 
 Если не юзать partition by, то окно - это весь наш запрос
+
+[Оглавление](#start)
+## <p id='view'>24. View</p>
+View - Это представление таблиц. Своего рода секьюрность: мы даем доступ на чтение к представлению какой-то выборки 
+и не даем к самой таблице.
+
+1. Например у нас есть запрос, который представляет собой какую-то выборку:
+
+        SELECT c.name,
+            e.last_name,
+            e.salary,
+            max(e.salary) OVER (PARTITION BY c.name),
+            min(e.salary) OVER (PARTITION BY c.name),
+            lag(e.salary) OVER (ORDER BY e.salary) - e.salary
+        FROM company c
+        LEFT JOIN employee e
+        ON c.id = e.company_id
+        ORDER BY c.name;
+
+    Для того, чтобы выбирать такие данные, нам всегда нужно писать такой большой запрос. Так вот view позволяют нам не писать 
+    такие большие запросы снова и снова, а образаться к этим view. Следовательно view там и создаются на основании каки-то запросов.
+
+        CREATE VIEW employee_view AS 
+        SELECT c.name,
+            e.last_name,
+            e.salary,
+            max(e.salary) OVER (PARTITION BY c.name),
+            min(e.salary) OVER (PARTITION BY c.name),
+            lag(e.salary) OVER (ORDER BY e.salary) - e.salary
+        FROM company c
+        LEFT JOIN employee e
+            ON c.id = e.company_id
+        ORDER BY c.name;
+
+    Теперь у нас в БД кроме таблиц, появилась папка views, где и лежат наши view и мы можем к ним обращаться
+
+        SELECT *
+        FROM employee_view
+        WHERE name = 'Facebook';
+
+    Суть в том, что под капотом все так же выполняется тот же большой запрос. Он никак не кэшируется. Это просто позволяет нам
+    писать более лаконично
+2. Если мы хотим закэшировать запрос, то используеется materialized view
+
+            CREATE MATERIALIZED VIEW m_employee_view AS
+            SELECT c.name,
+            e.last_name,
+            e.salary,
+            max(e.salary) OVER (PARTITION BY c.name),
+            min(e.salary) OVER (PARTITION BY c.name),
+            lag(e.salary) OVER (ORDER BY e.salary) - e.salary
+            FROM company c
+            LEFT JOIN employee e
+            ON c.id = e.company_id
+            ORDER BY c.name;
+    Теперь у нас в БД кроме tables и views есть еще и materialized views. Тут теперь 
+    хранятся данные из того громоздкого запроса.
+3. Теперь разница:
+   - Если я вставлю в таблицу нового сотрудника, то обычная view мне вернет новые данные, а кэшированная - нет 
+   (нужно снова вызвать громоздкий запрос для кэшТаблицы) - неудобно. На саом деле нам нужно обновить данные:
+     - REFRESH MATERIALIZED VIEW m_employee_view;
+
+
+

@@ -27,9 +27,12 @@ CREATE TABLE company_storage.employee
 
 INSERT INTO employee (first_name, last_name, salary, company_id)
 VALUES ('Ivan', 'Sidorov', 500, 1),
+       ('Ivan', 'Brown', 500, 1),
        ('Ivan', 'Ivanov', 1000, 2),
+       ('qIvan', 'Petrov', 1000, 2),
        ('Arni', 'Paramonov', NULL, 2),
        ('Petr', 'Petrov', 2000, 3),
+       ('qPetr', 'Sidorov', 500, 3),
        ('Sveta', 'Svetikova', 1500, NULL);
 
 DROP TABLE company_storage.contact;

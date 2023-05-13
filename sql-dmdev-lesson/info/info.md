@@ -18,6 +18,7 @@
 14. [DB-Normalizing](#db-Normalizing)
 15. [DB-NormalForm 1, 2, 3](#db-NormalForm1-2-3)
 16. [Table Relations](#tableRelations)
+17. [Joins](#joins)
 
 ## <p id='common'>0. Common</p>
 1) Constraints
@@ -330,7 +331,7 @@ Union можно писать в одом запросе сколько угод
 ![18_NF_total.png](scr%2F18_NF_total.png)
 
 ## <p id='tableRelations'>19. Table Relations</p>
-### Один ко многим
+#### Один ко многим
     Вот такая таблица у нас есть и нам не нравится, что дублируются строки, ссылаясь на разнве контакты.
 ![18_NF3_actual.png](scr%2F18_NF3_actual.png)
 
@@ -339,21 +340,94 @@ Union можно писать в одом запросе сколько угод
     но у каждого номера, один хозяин
 ![19_One to Many.png](scr%2F19_One%20to%20Many.png)
 
-### Один ко одному
+#### Один ко одному
     У одного сотрудника, только один телефон и у одного телефона только один хозяин
 ![19_One to One_1.png](scr%2F19_One%20to%20One_1.png)
 
     Можно объеденить столбцы и сказать, что наш primaryKey = foreignKey 
 ![19_One to One_2.png](scr%2F19_One%20to%20One_2.png)
 
-### Многие ко многим
+#### Многие ко многим
     Представим, что в офисе есть телефон, по которому можно дозвониться до многих сотрудников. Получается, что 
     у номера много абонентов. И у абонентов много номеров (домашний, рабочий, мобильный). Такая связь реализуется через 
     промежуточную таблицу
 ![19_Many to Many.png](scr%2F19_Many%20to%20Many.png)
 
-### UML
+#### UML
     Для того, чтобы делиться структурой БД, сущесвуют uml-диаграммы. Для генерации:
     rClick по нужной схеме -> diagrams -> show visualisation
 ![19_uml.png](scr%2F19_uml.png)
 ![19_erd.png](scr%2F19_erd.png)
+
+## <p id='joins'>20. Joins</p>
+- INNER JOIN (JOIN)
+- CROSS JOIN
+- LEFT OUTER JOIN (LEFT JOIN)
+- RIGHT OUTER JOIN (RIGHT JOIN)
+- FULL OUTER JOIN (FULL JOIN)
+
+Так мы могли бы обойтись без join:
+
+    SELECT company.name,
+       employee.first_name || employee.last_name fio
+    FROM employee, company
+    WHERE employee.company_id = company.id;
+
+#### INNER JOIN
+То же самое с join:
+
+    SELECT c.name,
+       employee.first_name || employee.last_name fio
+    FROM employee
+    -- JOIN - the same
+    INNER JOIN company c
+        ON c.id = employee.company_id;
+
+Join, как where - можем соединять сколько угодно таблиц:
+
+    SELECT c.name,
+        employee.first_name || ' ' || employee.last_name fio,
+        ec.contact_id,
+        c2.number
+    FROM employee
+    JOIN company c
+        ON c.id = employee.company_id
+    JOIN employee_contact ec
+        ON employee.id = ec.employee_id
+    JOIN contact c2
+        ON ec.contact_id = c2.id;
+
+#### CROSS JOIN
+То самое декартово произведение - все со всеми
+
+    SELECT *
+    FROM employee
+    CROSS JOIN company;
+
+    SELECT *
+    FROM company
+    CROSS JOIN (SELECT count(*) FROM employee) t;
+
+#### LEFT JOIN
+Слева вся таблица - справа то, что с ней связано
+
+Получим ВСЕ компании слева и сотрудников справа. Где нет сотрудников - null
+    
+    SELECT c.name, e.first_name
+    FROM company c
+    LEFT JOIN employee e ON c.id = e.company_id
+
+#### RIGHT JOIN
+Наоборот от left
+
+    SELECT c.name, e.first_name
+    FROM employee e
+    RIGHT JOIN company c on e.company_id = c.id
+    AND c.date > '2001-01-01'
+
+#### FULL JOIN
+Покажет обе таблицы вне зависимотсти ссылается ли кто-то на них
+
+    SELECT c.name, e.first_name
+    FROM employee e
+    FULL JOIN company c on e.company_id = c.id;
